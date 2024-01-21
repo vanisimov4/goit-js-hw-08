@@ -82,3 +82,14 @@ const markup = images
   .join('');
 
 listImages.insertAdjacentHTML('afterbegin', markup);
+
+listImages.addEventListener('click', handleImageClick);
+
+function handleImageClick(event) { 
+  console.log(event.target.dataset.source);
+  const instance = basicLightbox.create(`
+    <img src="${event.target.dataset.source}" width="800" height="600">
+`)
+
+instance.show();
+}
