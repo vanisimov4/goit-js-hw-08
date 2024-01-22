@@ -85,11 +85,19 @@ listImages.insertAdjacentHTML('afterbegin', markup);
 
 listImages.addEventListener('click', handleImageClick);
 
-function handleImageClick(event) { 
-  console.log(event.target.dataset.source);
-  const instance = basicLightbox.create(`
+function handleImageClick(event) {
+  if (event.target.nodeName == 'IMG') {
+    console.log(event.target.dataset.source);
+    const instance = basicLightbox.create(`
     <img src="${event.target.dataset.source}" width="800" height="600">
-`)
-
-instance.show();
+`);
+    instance.show();
+    document.addEventListener('keydown', handleEscListener);
+    function handleEscListener(event) {
+      if (event.code === 'Escape') {
+        document.removeEventListener('keydown', handleEscListener);
+        instance.close();
+      }
+    }
+  }
 }
