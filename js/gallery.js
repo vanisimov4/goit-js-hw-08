@@ -68,13 +68,13 @@ const listImages = document.querySelector('ul.gallery');
 
 const markup = images
   .map(
-    image => `<li class="gallery-item">
-  <a class="gallery-link" href="${image.original}" onclick="return false;">
+    image => `<li class='gallery-item'>
+  <a class='gallery-link' href='${image.original}'>
     <img
-      class="gallery-image"
-      src="${image.preview}"
-      data-source="${image.original}"
-      alt="${image.description}"
+      class='gallery-image'
+      src='${image.preview}'
+      data-source='${image.original}'
+      alt='${image.description}'
     />
   </a>
 </li>`
@@ -86,16 +86,28 @@ listImages.insertAdjacentHTML('afterbegin', markup);
 listImages.addEventListener('click', handleImageClick);
 
 function handleImageClick(event) {
+  event.preventDefault();
   if (event.target.nodeName == 'IMG') {
     console.log(event.target.dataset.source);
-    const instance = basicLightbox.create(`
-    <img src="${event.target.dataset.source}" width="800" height="600">
-`);
+
+    const instance = basicLightbox.create(
+      `
+    <img src='${event.target.dataset.source}' width='800' height='600'>
+`,
+      {
+        onShow: instance => {
+          document.addEventListener('keydown', handleEscListener);
+        },
+        onClose: instance => {
+          document.removeEventListener('keydown', handleEscListener);
+        },
+      }
+    );
+
     instance.show();
-    document.addEventListener('keydown', handleEscListener);
+
     function handleEscListener(event) {
       if (event.code === 'Escape') {
-        document.removeEventListener('keydown', handleEscListener);
         instance.close();
       }
     }
